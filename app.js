@@ -1,8 +1,10 @@
 const BASE_URL = "https://strangers-things.herokuapp.com";
 const cohort = "2101-VPI-RM-WEB-PT";
 
+//Posts, messages, and creating posts all renders in ".results"
 $(".main_body").append($(".results"));
 
+//Keeps track of current user if there is one
 window.auth_state = {
   currentUser: localStorage.getItem("currentUser"),
   authError: null,
@@ -56,10 +58,10 @@ function renderResults(result) {
     });
   } else {
     result
-      .filter(function (post) {
-        if (post.title.toLowerCase().includes(searchInputLower)) {
+      .filter(function ({ title, description }) {
+        if (title.toLowerCase().includes(searchInputLower)) {
           return true;
-        } else if (post.description.toLowerCase().includes(searchInputLower)) {
+        } else if (description.toLowerCase().includes(searchInputLower)) {
           return true;
         }
         return false;
@@ -72,30 +74,39 @@ function renderResults(result) {
 
 //renders post
 function renderPosts(post) {
+  const {
+    title,
+    price,
+    description,
+    location,
+    author: { username },
+    willDeliver,
+    isAuthor,
+  } = post;
   const newPost = $("<div class=newPost></div>");
   const postTitle = $(
-    `<h3><span class="postTitle"><b style="font-size: 35px; color:blue">${post.title}</b></span></h3>`
+    `<h3><span class="postTitle"><b style="font-size: 35px; color:blue">${title}</b></span></h3>`
   );
   const postPrice = $(
-    `<h4><span class="postPrice"><b style="font-size: 20px; color:rgb(3, 78, 252)">Price: </b>${post.price}</span></h4>`
+    `<h4><span class="postPrice"><b style="font-size: 20px; color:rgb(3, 78, 252)">Price: </b>${price}</span></h4>`
   );
   const postDesc = $(
-    `<h4><span class="postDesc"><b style="font-size: 20px; color:rgb(3, 78, 252)">Description: </b> ${post.description}</span></h4>`
+    `<h4><span class="postDesc"><b style="font-size: 20px; color:rgb(3, 78, 252)">Description: </b> ${description}</span></h4>`
   );
   const postLoc = $(
-    `<h4><span class="postLoc"><b style="font-size: 20px; color:rgb(3, 78, 252)">Location: </b> ${post.location}</span></h4>`
+    `<h4><span class="postLoc"><b style="font-size: 20px; color:rgb(3, 78, 252)">Location: </b> ${location}</span></h4>`
   );
   const postAuthor = $(
-    `<h4><span class="postAuthor"><b style="font-size: 20px; color:rgb(3, 78, 252)">Author: </b>${post.author.username}</span></h4>`
+    `<h4><span class="postAuthor"><b style="font-size: 20px; color:rgb(3, 78, 252)">Author: </b>${username}</span></h4>`
   );
 
   newPost.append(postTitle, postPrice, postDesc, postLoc, postAuthor);
-  if (post.willDeliver === true) {
+  if (willDeliver === true) {
     const postDeliver = $(
       `<h4><span class="postDeliver" style="color:green">Will Deliver!</span></h4>`
     );
     newPost.append(postDeliver);
-  } else if (post.willDeliver === false) {
+  } else if (willDeliver === false) {
     const postDeliver = $(
       `<h4><span class="postDeliver" style="color:rgb(184, 28, 0)">Will Not Deliver.</span></h4>`
     );
@@ -144,17 +155,18 @@ function renderPosts(post) {
 
     const newMsg = `<div id="newMsg">
         <textarea class="msgContent"></textarea>
-        <input class="sendMsg" type="submit" value="Send Message">
+        <input class="sendMsgBtn" type="submit" value="Send Message">
       </div>`;
     createMsg.append(newMsg);
-    $(".sendMsg").on("click", function (event) {
+    $(".sendMsgBtn").on("click", function (event) {
       event.preventDefault();
+      console.log("test")
       sendMessage(message);
       bgBlur.remove();
     });
   }
   if (window.auth_state.currentUser != null) {
-    if (post.isAuthor) {
+    if (isAuthor) {
       const edit_delete = $(`<div class="edit_delete"></div>`);
       const postEditBtn = $(
         `<button class="editPost" type="button">Edit Post</button>`
@@ -183,13 +195,12 @@ function renderPosts(post) {
 }
 
 //Sends message
-async function sendMessage(message) {
-  const message_ID = message._id;
+async function sendMessage({_id}) {
+  const message_ID = _id;
   const url = `${BASE_URL}/api/${cohort}/posts/${message_ID}/messages`;
   const token = localStorage.getItem("token");
   const newMessage = $(".msgContent").val();
 
-  console.log(newMessage);
   return fetch(url, {
     method: "POST",
     headers: {
@@ -207,8 +218,8 @@ async function sendMessage(message) {
 }
 
 //Edits user post
-async function editPost(post) {
-  const post_ID = post._id;
+async function editPost({ _id, title, price, description, location }) {
+  const post_ID = _id;
   const url = `${BASE_URL}/api/${cohort}/posts/${post_ID}`;
   const token = localStorage.getItem("token");
 
@@ -216,13 +227,13 @@ async function editPost(post) {
   const newPost = $('<div class="myPost"></div>');
   const userPost = $(`<form id="userPost">
         <label class="postTitle">Title:</label>
-        <textarea class="userTitle">${post.title}</textarea>
+        <textarea class="userTitle">${title}</textarea>
         <label>Price:</label>
-        <textarea class="userPrice">${post.price}</textarea>
+        <textarea class="userPrice">${price}</textarea>
         <label>Product Description:</label>
-        <textarea class="userDesc">${post.description}</textarea>
+        <textarea class="userDesc">${description}</textarea>
         <label>Location (If left blank, location will be on request):</label>
-        <textarea class="userLoc">${post.location}</textarea>
+        <textarea class="userLoc">${location}</textarea>
         <label class="willNotDeliver"> I Will Not Deliver.
           <input class="willNotDeliverButton" type="radio" checked="checked" name="radio">
         </label>
@@ -239,9 +250,10 @@ async function editPost(post) {
     const title = $(".userTitle").val();
     const description = $(".userDesc").val();
     const price = $(".userPrice").val();
-    const location = $(".userLoc").val() != "" ? $(".userLoc").val() : "[On Request]";
+    const location =
+      $(".userLoc").val() != "" ? $(".userLoc").val() : "[On Request]";
     const willDeliver = $(".willDeliverButton").is(":checked") ? true : false;
-  
+
     return fetch(url, {
       method: "PATCH",
       headers: {
@@ -250,11 +262,11 @@ async function editPost(post) {
       },
       body: JSON.stringify({
         post: {
-          title: title,
-          description: description,
-          price: price,
-          location: location,
-          willDeliver: willDeliver,
+          title,
+          description,
+          price,
+          location,
+          willDeliver,
         },
       }),
     })
@@ -267,8 +279,8 @@ async function editPost(post) {
 }
 
 //Delete users post
-async function deletePost(post) {
-  const post_ID = post._id;
+async function deletePost({ _id }) {
+  const post_ID = _id;
   const url = `${BASE_URL}/api/${cohort}/posts/${post_ID}`;
   const token = localStorage.getItem("token");
   return fetch(url, {
@@ -348,13 +360,13 @@ async function createPost() {
     }),
   })
     .then((response) => response.json())
-    .then((result) => {
+    .then(() => {
       fetchPosts();
     })
     .catch(console.error);
 }
 
-//The login and sign up option 
+//The login and sign up option
 login_signup();
 function login_signup() {
   $(".login_signup").click(function (event) {
@@ -411,13 +423,12 @@ function userCreate() {
       },
       body: JSON.stringify({
         user: {
-          username: `${username}`,
-          password: `${password}`,
+          username,
+          password,
         },
       }),
     })
       .then((response) => {
-        console.log(response);
         return response.json();
       })
       .then((result) => {
@@ -461,8 +472,8 @@ function userLogin() {
       },
       body: JSON.stringify({
         user: {
-          username: `${username}`,
-          password: `${password}`,
+          username,
+          password,
         },
       }),
     })
@@ -503,7 +514,6 @@ function userLogout() {
     $(".logout").remove();
     localStorage.removeItem("token");
     localStorage.removeItem("currentUser");
-    console.log("logged out!");
     $("#app").append($(`<div class="login_signup">Login/Sign-Up</div>`));
     window.auth_state.currentUser = null;
     login_signup();
@@ -525,13 +535,13 @@ function user() {
     .catch(console.error);
 }
 
-//Renders messages sent and received 
-function renderMessages(info) {
+//Renders messages sent and received
+function renderMessages({ post: { title }, fromUser: { username }, content }) {
   const message = `<div id="newMessage">
-      <div class="msgTitle"><b>Item:</b> ${info.post.title}</div>
-      <div class="msgFromBuyer"><b>From:</b> ${info.fromUser.username}</div>
+      <div class="msgTitle"><b>Item:</b> ${title}</div>
+      <div class="msgFromBuyer"><b>From:</b> ${username}</div>
       <div><b>Message:</b></div>
-      <div class="msgContent">${info.content}</div>
+      <div class="msgContent">${content}</div>
     </div>`;
   $(".results").append(message);
 }

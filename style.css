@@ -9,13 +9,14 @@
   display: grid;
   grid-template-columns: 300px auto 300px;
   grid-template-rows: 50px 40px auto;
-
   height: 100%;
   width: 100%;
-
   background: lightblue;
 }
 
+/* 
+  styling for header and sub-header
+ */
 #app .title {
   grid-row: 1/2;
   grid-column: 1 / 4;
@@ -41,7 +42,7 @@
   font-weight: bold;
 }
 
-.hello{
+.hello {
   display: flex;
   justify-content: space-around;
   padding-right: 10px;
@@ -55,7 +56,7 @@
   padding-right: 40px;
 }
 
-.logout{
+.logout {
   display: flex;
   justify-content: flex-end;
   padding-right: 20px;
@@ -65,10 +66,9 @@
   align-self: center;
   color: black;
   font-size: 20px;
-
 }
 
-.options{
+.options {
   display: grid;
   grid-row: 2/3;
   grid-column: 1/2;
@@ -79,20 +79,47 @@
   font-weight: bold;
 }
 
-#form{
+.posts:hover,
+.messages:hover,
+.create_posts:hover,
+.login_signup:hover,
+.logout:hover {
+  color: blue;
+  text-decoration: underline;
+  cursor: default;
+}
+
+/* Appears when a non-authenticated user clicks on Messages or Create Post */
+.notUser {
+  display: flex;
+  background-color: rgb(236, 68, 68);
+  margin-top: 10px;
+  margin-bottom: 10px;
+  height: 40px;
+  align-items: center;
+  padding-left: 5px;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+
+/* 
+  Modal styling for logging in or creating user
+ */
+#form {
   display: flex;
   flex-direction: column;
   width: 400px;
   height: 200px;
 }
 
-.userName{
+.userName {
   align-self: left;
   padding-left: 5px;
   padding: 5px;
 }
 
-#form .userNameInput{
+#form .userNameInput {
   align-self: left;
   border: 1px solid black;
   padding: 5px;
@@ -100,13 +127,13 @@
   margin-right: 5px;
 }
 
-.password{
+.password {
   align-self: left;
   padding-left: 5px;
   padding: 5px;
 }
 
-.userPassInput{
+.userPassInput {
   align-self: left;
   border: 1px solid black;
   margin-left: 5px;
@@ -114,25 +141,29 @@
   padding: 5px;
 }
 
-.createButton{
+.createButton {
   width: 100px;
   margin: 5px;
   padding: 5px;
 }
 
-.loginButton{
+.loginButton {
   width: 100px;
   margin: 5px;
   padding: 5px;
 }
 
-.login_signup{
+.login_signup {
   display: flex;
   grid-row: 2/3;
   grid-column: 3/4;
 }
 
-#search{
+
+/* 
+  Styling for search bar and search button
+ */
+#search {
   display: flex;
   flex-direction: row;
   grid-row: 2/3;
@@ -142,9 +173,9 @@
   text-align: center;
   align-self: center;
   justify-content: center;
-
 }
-#search button{
+
+#search button {
   display: flex;
   flex-direction: row;
   grid-row: 2/3;
@@ -154,25 +185,26 @@
   align-items: center;
 }
 
-.posts:hover, .messages:hover, .create_posts:hover, .login_signup:hover, .logout:hover{
-  color: blue;
-  text-decoration: underline;
-  cursor: default;
+
+/* 
+  .results is appened to .main_body and where most of the rendering occurs
+ */
+.main_body {
+  grid-row: 3/4;
+  grid-column: 1/4;
+  overflow: auto;
 }
 
-.results{
+.results {
   grid-row: 3/4;
   grid-column: 2/3;
   padding-left: 450px;
   padding-right: 450px;
 }
 
-.main_body{
-  grid-row: 3/4;
-  grid-column: 1/4;
-  overflow: auto;
-}
-
+/* 
+  styling used when an authenticated user creates a new post or edits a post
+ */
 .newPost {
   border: 2px solid rgb(2, 133, 177);
   height: 220px;
@@ -184,58 +216,69 @@
   overflow: auto;
 }
 
-.newPost:hover{
+.newPost:hover {
   box-shadow: 10px 5px 10px gray;
   border: 2px solid rgb(0, 61, 82);
 }
 
-.myPost{
+.myPost {
   width: 100%;
   padding-left: 25%;
   padding-right: 25%;
   padding-top: 20px;
 }
 
-.myPost label{
+.myPost label {
   display: flex;
   font-size: 20px;
   margin-bottom: 5px;
   margin-top: 5px;
 }
 
-.userTitle, .userPrice, .userLoc{
+.userTitle,
+.userPrice,
+.userLoc {
   width: 100%;
   height: 20px;
   resize: none;
   padding: 2px;
 }
-.userDesc{
+
+.userDesc {
   width: 100%;
   height: 300px;
   resize: none;
   padding: 2px;
 }
-.willDeliver, .willNotDeliver{
+
+.willDeliver,
+.willNotDeliver {
   display: flex;
   align-items: center;
 }
 
-.createPostBtn{
+.createPostBtn {
   width: 100%;
   padding: 10px;
   font-weight: bold;
 }
-.createPostBtn:hover{
+
+.createPostBtn:hover {
   color: green;
   box-shadow: 10px 5px 10px gray;
   font-weight: bold;
 }
 
-.willDeliverButton, .willNotDeliverButton{
+.willDeliverButton,
+.willNotDeliverButton {
   margin-left: 5px;
 }
 
-.messageBtnDiv{
+
+/* 
+  Styling used for sending messages, editing posts, and deleting posts that appear as buttons on the posts
+ */
+.messageBtnDiv {
   display: flex;
   flex-direction: row;
   justify-content: flex-end;
@@ -243,7 +286,7 @@
   height: 30px;
 }
 
-.edit_delete{
+.edit_delete {
   display: flex;
   flex-direction: row;
   justify-content: flex-end;
@@ -251,7 +294,7 @@
   height: 30px;
 }
 
-.editPost{
+.editPost {
   display: flex;
   width: 130px;
   height: 25px;
@@ -263,12 +306,13 @@
   font-size: 13px;
   font-weight: bold;
 }
-.editPost:hover{
+
+.editPost:hover {
   box-shadow: 3px 3px 5px black;
-  background-color:   rgb(62, 79, 179);
+  background-color: rgb(62, 79, 179);
 }
 
-.isAuthorBtn{
+.isAuthorBtn {
   display: flex;
   width: 130px;
   height: 25px;
@@ -281,11 +325,13 @@
   font-weight: bold;
   margin-left: 10px;
 }
-.isAuthorBtn:hover{
+
+.isAuthorBtn:hover {
   box-shadow: 3px 3px 5px black;
   background-color: rgb(185, 3, 3);
 }
-.notAuthorBtn{
+
+.notAuthorBtn {
   display: flex;
   width: 130px;
   height: 25px;
@@ -297,12 +343,13 @@
   font-size: 13px;
   font-weight: bold;
 }
-.notAuthorBtn:hover{
+
+.notAuthorBtn:hover {
   box-shadow: 3px 3px 5px black;
   background-color: rgb(2, 170, 2);
 }
 
-.msgContent{
+.msgContent {
   width: 100%;
   height: 85%;
   resize: none;
@@ -310,7 +357,8 @@
   border-bottom: 1px solid black;
   padding: 5px;
 }
-.sendMsg{
+
+.sendMsgBtn {
   display: flex;
   width: 100%;
   height: 15%;
@@ -319,11 +367,12 @@
   border-top: 1px solid black;
   font-weight: bold;
 }
-.sendMsg:hover{
-  background-color:rgb(6, 199, 6);
+
+.sendMsgBtn:hover {
+  background-color: rgb(6, 199, 6);
 }
 
-#newMessage{
+#newMessage {
   display: flex;
   flex-direction: column;
   height: 20%;
@@ -333,18 +382,7 @@
   margin: 10px;
   background-color: rgb(56, 171, 209);
 }
-.msgContent{
-  background-color: white;
-}
 
-.notUser{
-  display: flex;
-  background-color: rgb(236, 68, 68);
-  margin-top: 10px;
-  margin-bottom: 10px;
-  height: 40px;
-  align-items: center;
-  padding-left: 5px;
-  font-size: 20px;
-  font-weight: bold;
+.msgContent {
+  background-color: white;
 }
